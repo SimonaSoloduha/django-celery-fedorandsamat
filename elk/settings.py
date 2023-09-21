@@ -39,10 +39,18 @@ ALLOWED_HOSTS = [
 ]
 ABSOLUTE_HOST = 'https://a.elk.today'
 
-SUPPORT_EMAIL = 'help@elk.today'
-REPLY_TO = 'help@elk.today'
-SERVER_EMAIL = 'django@elk.today'
-EMAIL_NOTIFICATIONS_FROM = env('EMAIL_NOTIFICATIONS_FROM')
+SUPPORT_EMAIL = env('EMAIL_HOST_USER')
+REPLY_TO = env('EMAIL_HOST_USER')
+SERVER_EMAIL = env('EMAIL_HOST_USER')
+EMAIL_NOTIFICATIONS_FROM = env('EMAIL_HOST_USER')
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+
 
 ADMINS = [
     ('Fedor Borshev', 'f@f213.in'),
@@ -299,6 +307,10 @@ ANYMAIL = {
 }
 EMAIL_BACKEND = env('EMAIL_BACKEND')
 EMAIL_ASYNC = env.bool('EMAIL_ASYNC')
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 
 CACHES = {
     'default': env.cache(),
@@ -307,6 +319,9 @@ CACHES = {
 BROKER_URL = env('CELERY_BROKER_URL')
 CELERY_RESULT_BACKEND = env('CELERY_RESULT_BACKEND')
 CELERY_TASK_SERIALIZER = 'pickle'
+CELERY_ACCEPT_CONTENT = ['pickle']
+CELERY_RESULT_SERIALIZER = 'pickle'
+CELERY_BROKER_URL = env('CELERY_BROKER_URL')
 
 CELERYBEAT_SCHEDULE = {
     'check_classes_that_will_start_soon': {
@@ -320,6 +335,10 @@ CELERYBEAT_SCHEDULE = {
     'bill_timeline_entries': {
         'task': 'accounting.tasks.bill_timeline_entries',
         'schedule': timedelta(minutes=1),
+    },
+    'notify_students_not_have_lessons_more_week': {
+        'task': 'accounting.tasks.notify_students_not_have_lessons_more_week',
+        'schedule': timedelta(hours=24),
     },
 }
 

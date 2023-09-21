@@ -1,0 +1,15 @@
+{% extends "mail_templated/base.tpl" %}
+{% load humanize %}
+
+{% block subject %}
+Your money is running away...
+{% endblock %}
+
+{% block body %}
+Dear {{ c.first_name | capfirst }}, you haven't practiced for more than a week, your money is running away...
+
+We are waiting for you in the lessons!
+Come back ;)
+
+{% include 'mailer/_signature.html' %}
+{% endblock %}

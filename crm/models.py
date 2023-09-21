@@ -5,6 +5,7 @@ from django.apps import apps
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
+from django.utils import timezone
 from django.shortcuts import resolve_url
 from django_countries.fields import CountryField
 from image_cropping import ImageRatioField
@@ -240,6 +241,19 @@ class Customer(models.Model):
         Determine, if user has purchased classes
         """
         if self.classes.filter(is_fully_used=False).exclude(is_scheduled=True).count():
+            return True
+        return False
+
+    def check_have_classes_last_week(self):
+        """
+        Did the Customer have classes in the last week
+        """
+        current_datetime = timezone.now()
+        start_of_last_week = current_datetime - timezone.timedelta(days=7)
+        if self.classes.filter(
+            is_fully_used=True,
+            timeline__end__range=[start_of_last_week, current_datetime],
+        ):
             return True
         return False
 
